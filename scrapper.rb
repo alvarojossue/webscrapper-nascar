@@ -7,12 +7,19 @@ raw_data = Nokogiri::HTML(open(url))
 
 scripts_data = raw_data.css('script')[-2].text.split(',') #Second to last script item, which includes picture urls
 
-picture_data = []
+picture_urls = []
 
-scripts_data.each do |item|
-	if item.include?('big_thumbnail') && item.include?('"big":')
-		picture_data.push(item)
+scripts_data.each do |item| #Gets url for big pictures only
+	if item.include?('"big":')
+		new_item = item.split(" ")
+		new_item.each do |element|
+			if element.include?('http')
+				clean_element = element.tr('"', '')
+				picture_urls.push(clean_element)
+			end
+		end
 	end
 end
 
-puts picture_data
+puts picture_urls
+
