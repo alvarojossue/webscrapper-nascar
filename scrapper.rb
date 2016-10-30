@@ -10,8 +10,8 @@ scripts_data = raw_data.css('script')[-2].text.split(',') #Second to last script
 picture_urls = []
 
 scripts_data.each do |item| #Gets url for big pictures only
-	if item.include?('"big":')
-		new_item = item.split(" ")
+	if item.include?('"big": ')
+		new_item = item.split('"big": ')
 		new_item.each do |element|
 			if element.include?('http')
 				clean_element = element.tr('"', '')
