@@ -1,7 +1,7 @@
 require 'nokogiri'
 require 'open-uri'
 
-url = "http://galleries.nascar.com/gallery/736/at-track-photos-sunday-martinsville"
+url = "http://galleries.nascar.com/gallery/732/cubs-vs.-indians-and-long-nascar-droughts"
 
 raw_data = Nokogiri::HTML(open(url))
 
@@ -21,5 +21,13 @@ scripts_data.each do |item| #Gets url for big pictures only
 	end
 end
 
-puts picture_urls
+def download_image(url, dest)
+  open(url) do |u|
+    File.open(dest, 'wb') { |f| f.write(u.read) }
+  end
+end
 
+
+picture_urls.each do |url|
+	download_image(url, url.split('/').last)
+end
