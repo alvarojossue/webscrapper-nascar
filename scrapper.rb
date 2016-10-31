@@ -3,7 +3,9 @@ require 'open-uri'
 
 link = "http://galleries.nascar.com/gallery/732/cubs-vs.-indians-and-long-nascar-droughts"
 
-def scrape_data(url)
+
+
+def scrape_image_data(url)
 
 	raw_data = Nokogiri::HTML(open(url))
 
@@ -27,15 +29,44 @@ def scrape_data(url)
 
 end
 
+
+
 def download_image(url, dest)
   open(url) do |u|
     File.open(dest, 'wb') { |f| f.write(u.read) }
   end
 end
 
-images = scrape_data(link)
 
 
-images.each do |url|
-	download_image(url, url.split('/').last)
+def scrape_description_data(url)
+
+	the_raw_data = Nokogiri::HTML(open(url))
+
+	the_scripts_data = the_raw_data.css('script')[-2].text.scan(/(?<=description": ).*?(?=","credit)/).flatten
+
+	picture_descriptions = []
+
+	the_scripts_data.each do |the_item|
+		new_item = the_item.tr('"', '')
+		clean_item = Nokogiri::HTML.parse(new_item).text.gsub!(/(<[^>]*>)|\n|\t/s) {""}
+		picture_descriptions.push(clean_item)
+	end
+
+	final_descriptions = picture_descriptions.map do |the_description|
+		the_description + "\n\n"
+	end
+
+	final_descriptions
 end
+
+
+
+# images = scrape_image_data(link)
+the_text = scrape_description_data(link)
+	
+puts the_text
+
+# images.each do |url|
+# 	download_image(url, url.split('/').last)
+# end
