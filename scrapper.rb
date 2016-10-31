@@ -1,24 +1,30 @@
 require 'nokogiri'
 require 'open-uri'
 
-url = "http://galleries.nascar.com/gallery/732/cubs-vs.-indians-and-long-nascar-droughts"
+link = "http://galleries.nascar.com/gallery/732/cubs-vs.-indians-and-long-nascar-droughts"
 
-raw_data = Nokogiri::HTML(open(url))
+def scrape_data(url)
 
-scripts_data = raw_data.css('script')[-2].text.split(',') #Second to last script item, which includes picture urls
+	raw_data = Nokogiri::HTML(open(url))
 
-picture_urls = []
+	scripts_data = raw_data.css('script')[-2].text.split(',') #Second to last script item, which includes picture urls
 
-scripts_data.each do |item| #Gets url for big pictures only
-	if item.include?('"big": ')
-		new_item = item.split('"big": ')
-		new_item.each do |element|
-			if element.include?('http')
-				clean_element = element.tr('"', '')
-				picture_urls.push(clean_element)
+	picture_urls = []
+
+	scripts_data.each do |item| #Gets url for big pictures only
+		if item.include?('"big": ')
+			new_item = item.split('"big": ')
+			new_item.each do |element|
+				if element.include?('http')
+					clean_element = element.tr('"', '')
+					picture_urls.push(clean_element)
+				end
 			end
 		end
 	end
+
+	picture_urls
+
 end
 
 def download_image(url, dest)
@@ -27,7 +33,9 @@ def download_image(url, dest)
   end
 end
 
+images = scrape_data(link)
 
-picture_urls.each do |url|
+
+images.each do |url|
 	download_image(url, url.split('/').last)
 end
