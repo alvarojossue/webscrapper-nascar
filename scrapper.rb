@@ -1,7 +1,7 @@
 require 'nokogiri'
 require 'open-uri'
 
-link = "http://galleries.nascar.com/gallery/732/cubs-vs.-indians-and-long-nascar-droughts"
+link = "http://galleries.nascar.com/gallery/205/all-of-jimmie-johnsons-career-sprint-cup-series-wins"
 
 
 
@@ -41,6 +41,7 @@ end
 
 def scrape_description_data(url)
 
+	picture_number = 1
 	the_raw_data = Nokogiri::HTML(open(url))
 
 	the_scripts_data = the_raw_data.css('script')[-2].text.scan(/(?<=description": ).*?(?=","credit)/).flatten
@@ -49,12 +50,14 @@ def scrape_description_data(url)
 
 	the_scripts_data.each do |the_item|
 		new_item = the_item.tr('"', '')
-		clean_item = Nokogiri::HTML.parse(new_item).text.gsub!(/(<[^>]*>)|\n|\t/s) {""}
+		clean_item = Nokogiri::HTML.parse(new_item).text.gsub(/(<[^>]*>)|\n|\t/s) {""}
 		picture_descriptions.push(clean_item)
 	end
 
 	final_descriptions = picture_descriptions.map do |the_description|
-		the_description + "\n\n"
+		text = picture_number.to_s + " - " + the_description + "\n\n"
+		picture_number += 1
+		text
 	end
 
 	final_descriptions
