@@ -1,8 +1,15 @@
 require 'nokogiri'
 require 'open-uri'
 
-link = "http://galleries.nascar.com/gallery/205/all-of-jimmie-johnsons-career-sprint-cup-series-wins"
+puts "Scrapper for NASCAR Galleries\nPlease insert the URL of the gallery you want to scrape:"
 
+link = gets.chomp
+
+puts "How would you like to name the files?"
+
+filename = gets.chomp
+
+puts "Loading... Please wait\n.\n.\n.\n.\n.\n.\n."
 
 
 def scrape_image_data(url)
@@ -32,16 +39,17 @@ end
 
 
 def download_image(url, dest)
-  open(url) do |u|
-    File.open(dest, 'wb') { |f| f.write(u.read) }
-  end
+	valid_url = URI.parse(URI.encode(url.strip)) #Turn URLs with whitespaces into valid URLs
+  	open(valid_url) do |u|
+    	File.open(dest, 'wb') { |f| f.write(u.read) } #Create file and write content from URL
+  	end
 end
 
 
 
 def scrape_description_data(url)
 
-	picture_number = 1
+	description_number = 1
 	the_raw_data = Nokogiri::HTML(open(url))
 
 	the_scripts_data = the_raw_data.css('script')[-2].text.scan(/(?<=description": ).*?(?=","credit)/).flatten
@@ -55,8 +63,8 @@ def scrape_description_data(url)
 	end
 
 	final_descriptions = picture_descriptions.map do |the_description|
-		text = picture_number.to_s + " - " + the_description + "\n\n"
-		picture_number += 1
+		text = description_number.to_s + " - " + the_description + "\n\n"
+		description_number += 1
 		text
 	end
 
@@ -65,11 +73,14 @@ end
 
 
 
-# images = scrape_image_data(link)
+images = scrape_image_data(link)
 the_text = scrape_description_data(link)
 	
 puts the_text
 
-# images.each do |url|
-# 	download_image(url, url.split('/').last)
-# end
+picture_number = 1
+
+images.each do |url|
+	download_image(url, picture_number.to_s + "-" + filename + ".jpg") #url.split('/').last --> To name the file exactly as the source file
+	picture_number += 1
+end
