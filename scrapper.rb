@@ -1,6 +1,7 @@
 require 'nokogiri'
 require 'open-uri'
 
+
 puts "Scrapper for NASCAR Galleries\nPlease insert the URL of the gallery you want to scrape:"
 
 link = gets.chomp
