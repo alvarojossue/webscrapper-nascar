@@ -2,6 +2,6 @@
 
 Program to scrape images and captions from galleries at http://galleries.nascar.com. This program is currently used by the editorial team of http://nascar.com/latino. 
 
-Technologies: Ruby & Nokogori (gem). Planning on using Sinatra for in-browser support. 
+Technologies: Ruby & Nokogiri (gem). Planning on using Sinatra for in-browser support. 
 
 Follow me on Twitter and Instagram: @alvarojossue. 
