@@ -25,19 +25,7 @@ class Gallery
 		end
 
 		picture_urls
-		
 	end
-
-
-
-	def download_image(url, dest)
-		valid_url = URI.parse(URI.encode(url.strip)) #Turn URLs with whitespaces into valid URLs
-	  	open(valid_url) do |u|
-	    	File.open(dest, 'wb') { |f| f.write(u.read) } #Create file and write content from URL
-	  	end
-	end
-
-
 
 	def scrape_description_data
 
@@ -62,4 +50,5 @@ class Gallery
 
 		final_descriptions
 	end
+
 end
